@@ -23,6 +23,7 @@ from ipv6_scanner.helper import *
 
 app = typer.Typer()
 
+@timeit
 def new_prefixes(df, fig_name, fig_size,columns,**kwargs):
     pickle_path = os.path.join(INTERIM_DATA_DIR, f"{fig_name}_cached.pkl")
 
@@ -56,6 +57,7 @@ def new_prefixes(df, fig_name, fig_size,columns,**kwargs):
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def aggregated_telescopes_full_period(dfs, labels, fig_name, fig_size, resample_interval, label_column, columns, **kwargs):
     df = concat_frames(dfs, labels, label_column, columns)
 
@@ -121,6 +123,7 @@ def aggregated_telescopes_full_period(dfs, labels, fig_name, fig_size, resample_
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
     
+@timeit
 def heavy_hitter_bubble(dfs,labels, fig_name, fig_size,columns,vertical_dates,**kwargs):
     def log_scale_sizes(counts, scale=20):
         counts = np.array(counts)
@@ -217,6 +220,7 @@ def heavy_hitter_bubble(dfs,labels, fig_name, fig_size,columns,vertical_dates,**
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def network_traffic_overview(dfs,labels, fig_name, fig_size,interval,**kwargs):
     def process_dfs(df, interval):
         return process_network_overview(df,interval)
@@ -255,6 +259,7 @@ def network_traffic_overview(dfs,labels, fig_name, fig_size,interval,**kwargs):
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def taxonomy_plot_before_split(df,fig_name,fig_size):
     # Define the order of temporal_behavior categories
     temporal_order = ['periodic', 'intermittent', 'one-off']
@@ -377,6 +382,7 @@ def taxonomy_plot_before_split(df,fig_name,fig_size):
     mpl.rcParams['pdf.fonttype'] = 42
     mpl.rcParams['ps.fonttype'] = 42
 
+@timeit
 def taxonomy_plot_during_split(df,fig_name,fig_size):
     # Categorical-Datentyp für network_selection
     df['network_selection'] = pd.Categorical(df['network_selection'])
@@ -499,6 +505,7 @@ def taxonomy_plot_during_split(df,fig_name,fig_size):
     mpl.rcParams['pdf.fonttype'] = 42
     mpl.rcParams['ps.fonttype'] = 42
 
+@timeit
 def sessions_presplit_per_telescope(dfs,labels,fig_name,fig_size,resample_interval,label_column,columns):
     df = presplit_filter(concat_frames(dfs, labels, label_column, columns))
 
@@ -549,6 +556,7 @@ def sessions_presplit_per_telescope(dfs,labels,fig_name,fig_size,resample_interv
     fig.tight_layout()
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def sessions_per_prefix(df,fig_name,fig_size,columns,vertical_dates):
     plt.rc("font", size=12)
     fig,ax = fig_ax(fig_size)
@@ -617,6 +625,7 @@ def sessions_per_prefix(df,fig_name,fig_size,columns,vertical_dates):
     fig.tight_layout()
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def sources_sessions_t1_vs_other(dfs,labels,fig_name,fig_size,resample_interval,label_column,columns,vertical_dates):
     plt.rc("font", size=12)
     fig,ax = fig_ax(fig_size)
@@ -671,6 +680,7 @@ def sources_sessions_t1_vs_other(dfs,labels,fig_name,fig_size,resample_interval,
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def subnet_coverage_plot(df,fig_name,fig_size,columns):
     plt.rc("font", size=12)
     fig,ax = fig_ax(fig_size)
@@ -704,6 +714,7 @@ def subnet_coverage_plot(df,fig_name,fig_size,columns):
     
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def nist_plot(fig_name,fig_size):
     oneoff_subnet_df = pd.read_parquet(NIST_ONEOFF_SUBNET)
     periodic_subnet_df = pd.read_parquet(NIST_PERIODIC_SUBNET)
@@ -812,6 +823,7 @@ def nist_plot(fig_name,fig_size):
     
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def upsetplot_for_column_filtered(dfs, labels, column,label,title,sfx='',bbox=(0.5,1),minsubsetsize=0):
     suffix = f'{column}_{sfx}'
     columns=[column,'Date']
@@ -822,6 +834,7 @@ def upsetplot_for_column_filtered(dfs, labels, column,label,title,sfx='',bbox=(0
     plot_upsetplot(tmp,column,'source',labels,f'upsetplot_telescopes_{suffix}',
                    label,title = title,bbox=bbox,pickle_file=f'{INTERIM_DATA_DIR}/upsetplot_telescopes_{column}.pkl',minsubsetsize=minsubsetsize)
 
+@timeit
 def overlap_cumulative_first_observation_plot(dfs,fig_name,fig_size,vertical_dates):
     plt.rc("font", size=12)
     plt.rc("figure", figsize=fig_size)
@@ -932,6 +945,7 @@ def overlap_cumulative_first_observation_plot(dfs,fig_name,fig_size,vertical_dat
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def overlap_addresses_all_telescopes(dfs, fig_name, fig_size, vertical_dates):
     dft1 = dfs[0].collect()
     dft2 = dfs[1].collect()
@@ -1054,6 +1068,7 @@ def overlap_addresses_all_telescopes(dfs, fig_name, fig_size, vertical_dates):
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+@timeit
 def ponynet_random_scanner_heatmap(df,fig_name,fig_size,columns):
     ipv6_dest_2 = df.select(columns).filter((pl.col('Source_Address') == '2605:6400:10:6a8:bc7a:408:1ad:e7e6') & (pl.col('Session_ID_128')==44763)).sort(by='Timestamp').select('fullhex_destination_address').collect().to_pandas()
     
@@ -1106,6 +1121,7 @@ def ponynet_random_scanner_heatmap(df,fig_name,fig_size,columns):
     fig = plt.gcf()
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
 
+@timeit
 def tencent_structured_scanner_heatmap(df,fig_name,fig_size,columns):
     ipv6_dest_2 = df.select(columns).filter((pl.col('Source_Address') == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (pl.col('Session_ID_128')==33040)).sort(by='Timestamp').select('fullhex_destination_address').collect().to_pandas()
     
@@ -1158,6 +1174,7 @@ def tencent_structured_scanner_heatmap(df,fig_name,fig_size,columns):
     fig = plt.gcf()
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
 
+@timeit
 def tencent_numeric_ordered_heatmap(df,fig_name,fig_size,columns):
     ipv6_dest_2 = df.select(columns).filter((pl.col('Source_Address') == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (pl.col('Session_ID_128')==33040)).sort(by='fullhex_destination_address').select('fullhex_destination_address').collect().to_pandas()
     
@@ -1177,7 +1194,6 @@ def tencent_numeric_ordered_heatmap(df,fig_name,fig_size,columns):
             else:
                 continue 
             heatmap_data[j, i] = value
-    print('Rendering...go and get a coffee, this may take some time.')
     plt.figure(figsize=fig_size)
     plt.rc("font", size=9)
 
@@ -1273,29 +1289,30 @@ def main(
     columns=['Timestamp','scan_source_128','Session_ID_128']
     sources_sessions_t1_vs_other([t1,t2,t3,t4],['t1','t2','t3','t4'],FIG_SRC_SES_T1_VS_OTHER,FIGSIZE_SMALL_2,'2w','source',columns,vertical_dates)
 
-    logger.info("Generating Figure 13a...")
-    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
-    #tencent_structured_scanner_heatmap(t1,FIG_TENCENT_STRUCTURED,FIGSIZE_SMALL_3,columns)
-    
-    logger.info("Generating Figure 13b...")
-    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
-    #ponynet_random_scanner_heatmap(t1,FIG_PONYNET_RANDOM,FIGSIZE_SMALL_3,columns)
-
-    logger.info("Generating Figure 14...")
-    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
-    tencent_numeric_ordered_heatmap(t1,FIG_TENCENT_SORTED,FIGSIZE_SMALL_3,columns)
-
     logger.info("Generating Figure 15...")
     columns=['Timestamp', 'Source_Address', 'Destination_Address', 'fullhex_destination_address', 'Session_ID_128', 'is_oneoff_128', 'dest_addr_type', 'period_128']
     subnet_coverage_plot(t1,FIG_SUBNET_COVERAGE, FIGSIZE_SMALL_WITH_LEGEND_ON_TOP,columns)
     
     logger.info("Generating Figure 17a...")
-    #overlap_addresses_all_telescopes([t1,t2,t3,t4],FIG_OVERLAP_ADDR_ALL,FIGSIZE_SMALL,vertical_dates)
+    overlap_addresses_all_telescopes([t1,t2,t3,t4],FIG_OVERLAP_ADDR_ALL,FIGSIZE_SMALL,vertical_dates)
     logger.info("Generating Figure 17b...")
-    #overlap_cumulative_first_observation_plot([t1,t2],FIG_OVERLAP_CUM,FIGSIZE_SMALL,vertical_dates)
+    overlap_cumulative_first_observation_plot([t1,t2],FIG_OVERLAP_CUM,FIGSIZE_SMALL,vertical_dates)
 
     logger.info("Generating Figure 18...")
     nist_plot(FIG_NIST,FIGSIZE_LONG)
+
+    logger.info('Rendering lots of data...go and get a coffee, this may take some time.')
+    logger.info("Generating Figure 13a...")
+    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
+    tencent_structured_scanner_heatmap(t1,FIG_TENCENT_STRUCTURED,FIGSIZE_SMALL_3,columns)
+    
+    logger.info("Generating Figure 13b...")
+    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
+    ponynet_random_scanner_heatmap(t1,FIG_PONYNET_RANDOM,FIGSIZE_SMALL_3,columns)
+
+    logger.info("Generating Figure 14...")
+    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
+    tencent_numeric_ordered_heatmap(t1,FIG_TENCENT_SORTED,FIGSIZE_SMALL_3,columns)
 
     logger.success("Plot generation complete.")
     # -----------------------------------------

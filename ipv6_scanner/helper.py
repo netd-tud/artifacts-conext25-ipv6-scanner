@@ -16,6 +16,18 @@ import itertools
 
 import pandas as pd
 
+import time
+from loguru import logger
+
+def timeit(func):
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()  # High-resolution timer
+        result = func(*args, **kwargs)
+        end = time.perf_counter()
+        logger.info(f"Function '{func.__name__}' executed in {end - start:.6f} seconds")
+        return result
+    return wrapper
+
 def fig_ax(figsize: tuple, **kwargs) -> Tuple[Figure, Axes]:
     """Wrapper for plt.subplots with default figure size.
 

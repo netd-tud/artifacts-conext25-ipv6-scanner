@@ -1,0 +1,131 @@
+import ipaddress
+
+sorted_df3 = df4.sort_values(by='Timestamp')
+binary_dest = sorted_df3[(sorted_df3['Source_Address'] == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (sorted_df3['Session_ID_128'] == 33040)]
+
+# DataFrame nach 'Timestamp' sortieren
+def expand_ipv6(address):
+    try:
+        ip = ipaddress.ip_address(address)
+        return ip.exploded
+    except ValueError:
+        return "Ungültige Adresse"
+    
+
+binary_dest['Dst_Address_full'] = binary_dest['Destination_Address'].apply(expand_ipv6)
+    
+
+
+# Gültige und ungültige Adressen abfragen
+valide_adressen = binary_dest[binary_dest['Dst_Address_full'] != "Ungültige Adresse"]
+invalide_adressen = binary_dest[binary_dest['Dst_Address_full'] == "Ungültige Adresse"]
+
+# Ausgabe der Ergebnisse
+#print("Gültige Adressen:")
+#print(gvalide_adressen)
+
+print("\nUngültige Adressen:")
+print(invalide_adressen.head(15))
+
+# Anzahl der ungültigen Adressen ausgeben
+count_invalide = len(invalide_adressen)
+print("\nAnzahl der ungültigen Adressen:", count_invalide)
+
+
+
+
+
+from matplotlib.patches import Rectangle
+# DataFrame nach 'Timestamp' sortieren
+#sorted_df3 = df4.sort_values(by='Timestamp')
+
+# Filtern nach Source_Address und Tag
+#filtered_df_tenc_sort = sorted_df3[(sorted_df3['Source_Address'] == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (sorted_df3['Session_ID_128'] == 19284)]
+
+#filtered_df_tenc_sort = sorted_df3[(sorted_df3['Source_Address'] == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (sorted_df3['Session_ID_128'] == 33040)]
+
+# Erstelle ein extra DataFrame mit nur der Spalte Dst_Address_full
+ipv6_dest_2 = binary_dest[['Dst_Address_full']].copy()
+
+# Zeilennummerierung neu setzen, damit Plot erstellt werden kann
+ipv6_dest_2 = ipv6_dest_2.reset_index(drop=True)
+
+# Konvertiere die Zieladressen in IPv6Address-Objekte
+ipv6_dest_2['IPv6_Dest_Address'] = ipv6_dest_2['Dst_Address_full'].apply(ipaddress.IPv6Address)
+ipv6_dest_2['IPv6_Dest_Address'] = sorted(ipv6_dest_2['IPv6_Dest_Address'])
+
+ipv6_dest_2['IPv6_Dest_Address'] = ipv6_dest_2['IPv6_Dest_Address'].astype(str)
+
+ipv6_dest_2['IPv6_Dest_Address'] = ipv6_dest_2['IPv6_Dest_Address'].apply(expand_ipv6)
+
+# Entferne Doppelpunkte aus den IPv6-Adressen
+ipv6_dest_2['IPv6_Dest_Address'] = ipv6_dest_2['IPv6_Dest_Address'].str.replace(':', '')
+
+# Ersetze die ersten 8 Zeichen in allen Einträgen durch 'x'
+#ipv6_dest_2['IPv6_Dest_Address'] = ipv6_dest_2['IPv6_Dest_Address'].apply(lambda x: 'x' * 8 + x[8:])
+
+# Zeige die DataFrame nach der Änderung
+#print(ipv6_dest_2.head())
+
+# Bestimme die maximale Anzahl von Zeichen in den IPv6-Adressen
+max_length = max(len(addr) for addr in ipv6_dest_2['IPv6_Dest_Address'])
+
+palette = sns.color_palette("YlGnBu", 16)
+# Erstelle eine leere Matrix basierend auf der maximalen Zeichenanzahl
+heatmap_data = np.zeros((max_length, len(ipv6_dest_2)), dtype=int)
+
+
+# Fülle die Matrix entsprechend den Zeichen in den IPv6-Adressen
+for i, row in enumerate(ipv6_dest_2['IPv6_Dest_Address']):
+    for j, char in enumerate(row):
+        if char.isdigit():
+            value = int(char)
+        elif char.isalpha():
+            value = ord(char.lower()) - ord('a') + 10
+        else:
+            continue  # Ignoriere andere Zeichen
+        heatmap_data[j, i] = value
+
+# Erstelle eine Heatmap mit seaborn und der Farbskala
+plt.figure(figsize=(8 * 0.7, 3 * 0.7))
+plt.rc("font", size=9)
+
+heatmap = sns.heatmap(heatmap_data, cmap=palette, cbar=True, cbar_kws={'label': 'Hexadecimal character'})
+
+plt.xlabel('Order of address [#]')
+plt.ylabel('IPv6 address [nibble]')
+
+# X-Achse anpassen
+plt.xticks([])
+# Y-Achse anpassen mit Intervallen
+major_locator = MultipleLocator(4)  # Haupt-Intervall
+minor_locator = MultipleLocator(2)  # Neben-Intervall
+
+plt.gca().yaxis.set_major_locator(major_locator)
+#plt.gca().yaxis.set_minor_locator(minor_locator)
+
+y_ticks_positions = [3.5, 7.5, 11.5, 15.5, 19.5, 23.5, 27.5, 31.5]
+y_ticks_labels = [4, 8, 12, 16, 20, 24, 28, 32]
+plt.yticks(y_ticks_positions, labels=y_ticks_labels)
+
+#plt.ylim(32, 8)
+
+# Benutzerdefinierte Beschriftungen für die Farbpalette in der Legende festlegen
+# Benutzerdefinierte Beschriftungen für die Farbpalette in der Legende festlegen
+colorbar = heatmap.collections[0].colorbar
+colorbar.set_ticks(np.linspace(0, 15, 16))  # Festlegen der Tickpositionen
+#colorbar.set_ticks(np.linspace(0, 16)) 
+colorbar.set_ticklabels(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'])  # Festlegen der Beschriftungen
+
+# Ändere die Größe der Farbpalette in der Legende (Verlängern der Farbbalken)
+colorbar.ax.set_aspect(3)
+
+for i in range(heatmap_data.shape[1]):  # Durchlaufe die Spalten
+    for j in range(8):  # Nur die ersten 9 Zeilen einfärben
+        heatmap.add_patch(Rectangle((i, j), 1, 1, fill=True, color='#D1D1D1'))
+
+plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
+
+# plt.savefig(os.path.join("Diagramme", "tencent_hex_sort_longer_addresses.png"), bbox_inches="tight", dpi=300)
+
+plt.show()

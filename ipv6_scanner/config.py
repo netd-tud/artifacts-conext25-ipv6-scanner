@@ -49,9 +49,13 @@ FIG_SUBNET_COVERAGE = 'Subent_Coverage'
 FIG_NIST = 'NIST'
 FIG_OVERLAP_CUM = 'overlap-cumulative-first-observation'
 FIG_OVERLAP_ADDR_ALL = 'overlap-addrs-all-packets-by-telescope'
+FIG_PONYNET_RANDOM = 'ponynet_hex_longer'
+FIG_TENCENT_STRUCTURED = 'tencent_hex_longer'
+FIG_TENCENT_SORTED = 'tencent_hex_sort'
 
 FIGSIZE_SMALL = (8 * 0.7, 3 * 0.5)
 FIGSIZE_SMALL_2 = (8 * 0.7, 5 * 0.7)
+FIGSIZE_SMALL_3 = (8 * 0.7, 3 * 0.7)
 FIGSIZE_SMALL_WITH_LEGEND_ON_TOP = (8 * 0.7, 3 * 0.6)
 FIGSIZE_MEDIUM = (8 * 0.7, 5.5 * 0.5)
 FIGSIZE_WIDE = (14 * 0.7, 5 * 0.5)

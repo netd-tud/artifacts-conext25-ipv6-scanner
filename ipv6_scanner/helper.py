@@ -30,7 +30,7 @@ def fig_ax(figsize: tuple, **kwargs) -> Tuple[Figure, Axes]:
 
 
 def save_plot(
-    fig: Figure, file_name: str, directory: Path = FIGURES_DIR, autoclose: bool = False
+    fig: Figure, file_name: str, directory: Path = FIGURES_DIR, autoclose: bool = False, dpi=200, pngonly=False
 ):
     """Save figure into FIGURES_DIR in high resolution png and pdf format.
 
@@ -42,8 +42,9 @@ def save_plot(
     """
     if file_name is not None:
         print(directory / f"{file_name}.png")
-        fig.savefig(directory / f"{file_name}.png", bbox_inches="tight", dpi=200)
-        fig.savefig(directory / f"{file_name}.pdf", bbox_inches="tight")
+        fig.savefig(directory / f"{file_name}.png", bbox_inches="tight", dpi=dpi)
+        if not pngonly:
+            fig.savefig(directory / f"{file_name}.pdf", bbox_inches="tight")
 
     if autoclose:
         plt.close()

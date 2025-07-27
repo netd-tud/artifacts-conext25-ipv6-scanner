@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib as mpl
 
 import seaborn as sns
-from matplotlib.patches import Patch
+from matplotlib.patches import Patch,Rectangle
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
@@ -1054,6 +1054,162 @@ def overlap_addresses_all_telescopes(dfs, fig_name, fig_size, vertical_dates):
 
     save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True)
 
+def ponynet_random_scanner_heatmap(df,fig_name,fig_size,columns):
+    ipv6_dest_2 = df.select(columns).filter((pl.col('Source_Address') == '2605:6400:10:6a8:bc7a:408:1ad:e7e6') & (pl.col('Session_ID_128')==44763)).sort(by='Timestamp').select('fullhex_destination_address').collect().to_pandas()
+    
+    ipv6_dest_2 = ipv6_dest_2.reset_index(drop=True)
+
+    max_length = max(len(addr) for addr in ipv6_dest_2['fullhex_destination_address'])
+
+    palette = sns.color_palette("YlGnBu", 16)
+    heatmap_data = np.zeros((max_length, len(ipv6_dest_2)), dtype=int)
+
+    for i, row in enumerate(ipv6_dest_2['fullhex_destination_address']):
+        for j, char in enumerate(row):
+            if char.isdigit():
+                value = int(char)
+            elif char.isalpha():
+                value = ord(char.lower()) - ord('a') + 10
+            else:
+                continue 
+            heatmap_data[j, i] = value
+
+    plt.figure(figsize=fig_size)
+    plt.rc("font", size=9)
+
+    heatmap = sns.heatmap(heatmap_data, cmap=palette, cbar=True, cbar_kws={'label': 'Hexadecimal character'})
+
+    plt.xlabel('Order of arrival [#]')
+    plt.ylabel('IPv6 address [nibble]')
+
+    plt.xticks([])
+    major_locator = ticker.MultipleLocator(4)
+    minor_locator = ticker.MultipleLocator(2)
+
+    plt.gca().yaxis.set_major_locator(major_locator)
+
+    y_ticks_positions = [3.5, 7.5, 11.5, 15.5, 19.5, 23.5, 27.5, 31.5]
+    y_ticks_labels = [4, 8, 12, 16, 20, 24, 28, 32]
+    plt.yticks(y_ticks_positions, labels=y_ticks_labels)
+
+    colorbar = heatmap.collections[0].colorbar
+    colorbar.set_ticks(np.linspace(0, 15, 16))
+    colorbar.set_ticklabels(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'])
+    colorbar.ax.set_aspect(3)
+
+    for i in range(heatmap_data.shape[1]):
+        for j in range(8):
+            heatmap.add_patch(Rectangle((i, j), 1, 1, fill=True, color='#D1D1D1'))
+
+    plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
+
+    fig = plt.gcf()
+    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
+
+def tencent_structured_scanner_heatmap(df,fig_name,fig_size,columns):
+    ipv6_dest_2 = df.select(columns).filter((pl.col('Source_Address') == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (pl.col('Session_ID_128')==33040)).sort(by='Timestamp').select('fullhex_destination_address').collect().to_pandas()
+    
+    ipv6_dest_2 = ipv6_dest_2.reset_index(drop=True)
+
+    max_length = max(len(addr) for addr in ipv6_dest_2['fullhex_destination_address'])
+
+    palette = sns.color_palette("YlGnBu", 16)
+    heatmap_data = np.zeros((max_length, len(ipv6_dest_2)), dtype=int)
+
+    for i, row in enumerate(ipv6_dest_2['fullhex_destination_address']):
+        for j, char in enumerate(row):
+            if char.isdigit():
+                value = int(char)
+            elif char.isalpha():
+                value = ord(char.lower()) - ord('a') + 10
+            else:
+                continue 
+            heatmap_data[j, i] = value
+
+    plt.figure(figsize=fig_size)
+    plt.rc("font", size=9)
+
+    heatmap = sns.heatmap(heatmap_data, cmap=palette, cbar=True, cbar_kws={'label': 'Hexadecimal character'})
+
+    plt.xlabel('Order of arrival [#]')
+    plt.ylabel('IPv6 address [nibble]')
+
+    plt.xticks([])
+    major_locator = ticker.MultipleLocator(4)
+    minor_locator = ticker.MultipleLocator(2)
+
+    plt.gca().yaxis.set_major_locator(major_locator)
+
+    y_ticks_positions = [3.5, 7.5, 11.5, 15.5, 19.5, 23.5, 27.5, 31.5]
+    y_ticks_labels = [4, 8, 12, 16, 20, 24, 28, 32]
+    plt.yticks(y_ticks_positions, labels=y_ticks_labels)
+
+    colorbar = heatmap.collections[0].colorbar
+    colorbar.set_ticks(np.linspace(0, 15, 16))
+    colorbar.set_ticklabels(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'])
+    colorbar.ax.set_aspect(3)
+
+    for i in range(heatmap_data.shape[1]):
+        for j in range(8):
+            heatmap.add_patch(Rectangle((i, j), 1, 1, fill=True, color='#D1D1D1'))
+
+    plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
+
+    fig = plt.gcf()
+    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
+
+def tencent_numeric_ordered_heatmap(df,fig_name,fig_size,columns):
+    ipv6_dest_2 = df.select(columns).filter((pl.col('Source_Address') == '240d:c000:2010:1a42:0:98e7:da67:1fb7') & (pl.col('Session_ID_128')==33040)).sort(by='fullhex_destination_address').select('fullhex_destination_address').collect().to_pandas()
+    
+    ipv6_dest_2 = ipv6_dest_2.reset_index(drop=True)
+
+    max_length = max(len(addr) for addr in ipv6_dest_2['fullhex_destination_address'])
+
+    palette = sns.color_palette("YlGnBu", 16)
+    heatmap_data = np.zeros((max_length, len(ipv6_dest_2)), dtype=int)
+
+    for i, row in enumerate(ipv6_dest_2['fullhex_destination_address']):
+        for j, char in enumerate(row):
+            if char.isdigit():
+                value = int(char)
+            elif char.isalpha():
+                value = ord(char.lower()) - ord('a') + 10
+            else:
+                continue 
+            heatmap_data[j, i] = value
+    print('Rendering...go and get a coffee, this may take some time.')
+    plt.figure(figsize=fig_size)
+    plt.rc("font", size=9)
+
+    heatmap = sns.heatmap(heatmap_data, cmap=palette, cbar=True, cbar_kws={'label': 'Hexadecimal character'})
+
+    plt.xlabel('Order of address [#]')
+    plt.ylabel('IPv6 address [nibble]')
+
+    plt.xticks([])
+    major_locator = ticker.MultipleLocator(4)
+    minor_locator = ticker.MultipleLocator(2)
+
+    plt.gca().yaxis.set_major_locator(major_locator)
+
+    y_ticks_positions = [3.5, 7.5, 11.5, 15.5, 19.5, 23.5, 27.5, 31.5]
+    y_ticks_labels = [4, 8, 12, 16, 20, 24, 28, 32]
+    plt.yticks(y_ticks_positions, labels=y_ticks_labels)
+
+    colorbar = heatmap.collections[0].colorbar
+    colorbar.set_ticks(np.linspace(0, 15, 16))
+    colorbar.set_ticklabels(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'])
+    colorbar.ax.set_aspect(3)
+
+    for i in range(heatmap_data.shape[1]):
+        for j in range(8):
+            heatmap.add_patch(Rectangle((i, j), 1, 1, fill=True, color='#D1D1D1'))
+
+    plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
+
+    fig = plt.gcf()
+    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
+
 @app.command()
 def main(
     # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
@@ -1117,12 +1273,24 @@ def main(
     columns=['Timestamp','scan_source_128','Session_ID_128']
     sources_sessions_t1_vs_other([t1,t2,t3,t4],['t1','t2','t3','t4'],FIG_SRC_SES_T1_VS_OTHER,FIGSIZE_SMALL_2,'2w','source',columns,vertical_dates)
 
+    logger.info("Generating Figure 13a...")
+    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
+    #tencent_structured_scanner_heatmap(t1,FIG_TENCENT_STRUCTURED,FIGSIZE_SMALL_3,columns)
+    
+    logger.info("Generating Figure 13b...")
+    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
+    #ponynet_random_scanner_heatmap(t1,FIG_PONYNET_RANDOM,FIGSIZE_SMALL_3,columns)
+
+    logger.info("Generating Figure 14...")
+    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
+    tencent_numeric_ordered_heatmap(t1,FIG_TENCENT_SORTED,FIGSIZE_SMALL_3,columns)
+
     logger.info("Generating Figure 15...")
     columns=['Timestamp', 'Source_Address', 'Destination_Address', 'fullhex_destination_address', 'Session_ID_128', 'is_oneoff_128', 'dest_addr_type', 'period_128']
     subnet_coverage_plot(t1,FIG_SUBNET_COVERAGE, FIGSIZE_SMALL_WITH_LEGEND_ON_TOP,columns)
     
     logger.info("Generating Figure 17a...")
-    overlap_addresses_all_telescopes([t1,t2,t3,t4],FIG_OVERLAP_ADDR_ALL,FIGSIZE_SMALL,vertical_dates)
+    #overlap_addresses_all_telescopes([t1,t2,t3,t4],FIG_OVERLAP_ADDR_ALL,FIGSIZE_SMALL,vertical_dates)
     logger.info("Generating Figure 17b...")
     #overlap_cumulative_first_observation_plot([t1,t2],FIG_OVERLAP_CUM,FIGSIZE_SMALL,vertical_dates)
 

@@ -25,6 +25,9 @@ requirements:
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+	$(shell rm notebooks/*.html)
+	$(shell rm reports/figures/*.pdf)
+	$(shell rm reports/figures/*.png)
 
 ## Lint using flake8 and black (use `make format` to do formatting)
 .PHONY: lint
@@ -39,16 +42,21 @@ format:
 	black --config pyproject.toml ipv6_scanner
 
 
+## Convert notebooks to html
+notebooks=$(shell ls notebooks/*.ipynb)
+notebooks_html:=$(subst .ipynb,.html,$(notebooks))
 
+%.html: %.ipynb
+	jupyter nbconvert $(NBCONVERT_PARAMS) --to html $< 
 
-## Set up python interpreter environment
-.PHONY: create_environment
-create_environment:
-	@bash -c "if [ ! -z `which virtualenvwrapper.sh` ]; then source `which virtualenvwrapper.sh`; mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); else mkvirtualenv.bat $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); fi"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
-	
+nbconvert: $(notebooks_html)
 
+nbconvert-clean-execute: NBCONVERT_PARAMS=--execute
+nbconvert-clean-execute: $(shell rm notebooks/*.html)
+nbconvert-clean-execute: $(notebooks_html)
 
+python_env:
+	python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 
 #################################################################################
 # PROJECT RULES                                                                 #

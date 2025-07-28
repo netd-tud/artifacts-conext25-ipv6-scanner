@@ -28,6 +28,8 @@ T4_DATAFRAME = PROCESSED_DATA_DIR / "telescope-t4-20240702.parquet"
 TAXONOMY_BEFORE_SPLIT = PROCESSED_DATA_DIR / "taxonomy-before-split-df.csv"
 TAXONOMY_DURING_SPLIT = PROCESSED_DATA_DIR / "taxonomy-during-split-t1-df.csv"
 ANNOUNCEMENT_LOG_FILE = PROCESSED_DATA_DIR / "prefix-announcements.csv"
+RDNS_DATA_FILE = PROCESSED_DATA_DIR / "sips4rdns-t1234.csv.out"
+ASN_TYPE_FILE = EXTERNAL_DATA_DIR / "ipinfo_asn_2025_05_23.parquet"
 
 NIST_ONEOFF_SUBNET = PROCESSED_DATA_DIR / 'NIST_oneoff_subnet_df.parquet'
 NIST_PERIODIC_SUBNET = PROCESSED_DATA_DIR / 'NIST_periodic_subnet_df.parquet'

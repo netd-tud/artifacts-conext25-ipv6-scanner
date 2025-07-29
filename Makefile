@@ -32,7 +32,7 @@ clean:
 .PHONY: clean-cache
 clean-cache:
 	$(shell rm data/interim/*.pkl)
-	
+
 ## Lint using flake8 and black (use `make format` to do formatting)
 .PHONY: lint
 lint:
@@ -47,8 +47,8 @@ format:
 
 
 ## Convert notebooks to html
-notebooks = notebooks/table.ipynb
-notebooks_html = notebooks/table.html
+notebooks = notebooks/tables.ipynb
+notebooks_html = notebooks/tables.html
 
 %.html: %.ipynb
 	jupyter nbconvert $(NBCONVERT_PARAMS) --to html $< 
@@ -56,8 +56,21 @@ notebooks_html = notebooks/table.html
 nbconvert: $(notebooks_html)
 
 nbconvert-clean-execute: NBCONVERT_PARAMS=--execute
-nbconvert-clean-execute: $(shell rm notebooks/*.html)
+nbconvert-clean-execute: $(shell rm notebooks/tables.html)
 nbconvert-clean-execute: $(notebooks_html)
+
+## Convert notebooks to html
+notebooks2 = notebooks/tables-new.ipynb
+notebooks_html2 = notebooks/tables-new.html
+
+%.html: %.ipynb
+	jupyter nbconvert $(NBCONVERT_PARAMS) --to html $< 
+
+nbconvert-new: $(notebooks_html)
+
+nbconvert-clean-execute-new: NBCONVERT_PARAMS=--execute
+nbconvert-clean-execute-new: $(shell rm notebooks/tables-new.html)
+nbconvert-clean-execute-new: $(notebooks_html2)
 
 python_env:
 	$(PYTHON_INTERPRETER) -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt

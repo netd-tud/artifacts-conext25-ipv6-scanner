@@ -16,16 +16,16 @@ import sys
 import warnings
 warnings.filterwarnings("ignore")
 
+from ipv6_scanner.config import *
+
 suffix = sys.argv[1]
 
-working_dir = './process-flows'
-
-announcement_file = f'{working_dir}/prefix-announcements.csv'
+announcement_file = ANNOUNCEMENT_LOG_FILE
 announcement_df = pd.read_csv(announcement_file)
 
 print('[*] Read announcement data.')
 
-df = pd.read_csv(f'./data/processed/telescope-t{suffix}_data.csv.gz',sep='|',parse_dates=['Timestamp','Date'])
+df = pd.read_csv(f'{PROCESSED_DATA_DIR}/telescope-t{suffix}_data.csv.gz',sep='|',parse_dates=['Timestamp','Date'])
 print('[*] Read dataframe.')
 
 df['Announcement_Timestamp'] = df.Announcement_Period.map(announcement_df.set_index('Id').drop_duplicates('Timestamp_From')['Timestamp_From'])
@@ -118,14 +118,13 @@ df['is_triggered_48'] = df.scan_source_48.apply(lambda ip: ip in triggered_ips)
 print('[*] Determined oneoff scanners.')
 
 df.sort_values('Timestamp',inplace=True)
-
+df = df.dropna(subset=['Hour'])
 print('[*] Operations done.')
 
 print('[*] Setting dtypes...')
 df['Session_ID_128'] = df['Session_ID_128'].astype('uint32')
 df['Session_ID_64'] = df['Session_ID_64'].astype('uint32')
 df['Session_ID_48'] = df['Session_ID_48'].astype('uint32')
-
 df['Hour'] = df.Hour.astype('uint8')
 df['Minute'] = df.Hour.astype('uint8')
 df['Announcement_Period'] = df.Announcement_Period.astype('uint8')
@@ -153,6 +152,7 @@ df['Next_Header'] = df['Next_Header'].astype('uint8')
 df['IP_Version'] = df['IP_Version'].astype('uint8')
 df['Frame_Length'] = df['Frame_Length'].astype('uint16')
 
+#print(df.head())
 object_columns = df.select_dtypes(include="object").columns
 with tqdm(total=len(object_columns)) as pbar:
     for column in object_columns:
@@ -178,8 +178,9 @@ with tqdm(total=len(object_columns)) as pbar:
 
 print('[*] Done.')
 
-print('[*] Writing back parquet file with categories...')
-df.to_parquet(f'./data/processed/telescope-t{suffix}_data.parquet',compression=None)
+print(f'[*] Writing back parquet file with categories:')
+print(f'{PROCESSED_DATA_DIR}/telescope-t{suffix}_data.parquet')
+df.to_parquet(f'{PROCESSED_DATA_DIR}/telescope-t{suffix}_data.parquet',compression=None)
 
 #df.to_csv(f'{working_dir}/bcix-telescope-data-complete.csv.gz',index=False,sep='|',compression='gzip')
 print('[*] Done.')

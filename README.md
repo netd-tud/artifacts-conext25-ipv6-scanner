@@ -20,6 +20,8 @@ Clone this repository, then:
 2. Make a virtual environment: `make python_env`
 3. Activate python env: `source .venv/bin/activate`
 4. Download required data from [https://doi.org/10.5281/zenodo.16419096](https://doi.org/10.5281/zenodo.16419096)
+5. Move the `telescope-t*.parquet` files into `./data/processed/`
+5. Move the `addr_type*.gz` files into `./data/processed/`
 5. Move the `telescope` parquet files into `./data/processed/`
 6. To get a clean starting environment run `make clean` first.
 

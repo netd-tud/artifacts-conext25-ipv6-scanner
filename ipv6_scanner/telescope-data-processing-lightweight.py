@@ -1,15 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # In[1]:
 
 import sys
 import pandas as pd
 import numpy as np
-import seaborn as sns
-from matplotlib.colors import LogNorm
 import glob
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from datetime import datetime as dt
 
@@ -41,7 +35,7 @@ import warnings
 warnings.filterwarnings("ignore")
 # In[2]:
 
-
+from ipv6_scanner.config import *
 
 
 def assign_tool(payload):
@@ -443,9 +437,9 @@ class ASname:
 
 
 
-maxmindpath = './data/external/maxmind/'
-ipasnpath = './data/external/ipasn/'
-asnamepath = './data/external/asname/'
+maxmindpath = MAXMIND_DIR
+ipasnpath = IPASN_DIR
+asnamepath = ASNAMES_DIR
 fields = 'Source_Address'
 
 @lru_cache(maxsize=10000)
@@ -564,9 +558,10 @@ def load_join_and_save(files,columns,prefixes,announcement_df,save_dir):
 # In[16]:
 suffix=sys.argv[1]
 
-working_dir = '/home/koch/process-flows'
 #files = glob.glob('./flowdaten-archive/bcix*')
-files = glob.glob(f'{working_dir}/csv_6{suffix}/bcix*')
+dir_map = {1:T1_RAW,2:T2_RAW,3:T3_RAW,4:T4_RAW}
+dir_map_tmp = {1:T1_TMP,2:T2_TMP,3:T3_TMP,4:T4_TMP}
+files = glob.glob(f'{dir_map[int(suffix)]}/*')
 
 files.sort()
 
@@ -579,7 +574,7 @@ columns=['Timestamp', 'Frame_Length', 'IP_Version', 'Flow_Label', 'Payload_Lengt
                            'QUIC_version', 'ICMPv6_Type','Payload','Payload_Text','Payload_ByteLength',
                           'DNS_id','DNS_qry_name','DNS_resp_flag']
 
-announcement_file = f'{working_dir}/prefix-announcements.csv'
+announcement_file = ANNOUNCEMENT_LOG_FILE
 announcement_df = pd.read_csv(announcement_file)
 announcement_df['Timestamp_From'] = pd.to_datetime(announcement_df['Timestamp_From'])
 announcement_df['Timestamp_To'] = pd.to_datetime(announcement_df['Timestamp_To'])
@@ -587,12 +582,12 @@ prefixes = announcement_df.Prefix.unique()
 
 def status_bar(directory,total):
     with tqdm(total=total) as pbar:
-        current_status = len(glob.glob(f'{directory}/bcix*'))
+        current_status = len(glob.glob(f'{directory}/*'))
         pbar.update(current_status)
         old=current_status
         while total>current_status:
             sleep(5)
-            current_status = len(glob.glob(f'{directory}/bcix*'))
+            current_status = len(glob.glob(f'{directory}/*'))
             pbar.update(current_status-old)
             old=current_status
             
@@ -626,13 +621,13 @@ def append_df_to_gzip(filename, data):
         f_out.write(csv_data.encode())
 
 # Usage
-parallel_processing(files, columns, prefixes, announcement_df, f'./data/raw/t{suffix}_raw')
+parallel_processing(files, columns, prefixes, announcement_df, f'{dir_map_tmp[int(suffix)]}')
 
-files_to_join = glob.glob(f'./data/raw/t{suffix}_raw/*')
+files_to_join = glob.glob(f'{dir_map_tmp[int(suffix)]}/*')
 
 files_to_join.sort()
 
-df_file = f'./data/processed/telescope-t{suffix}_data.csv.gz'
+df_file = f'{PROCESSED_DATA_DIR}/telescope-t{suffix}_data.csv.gz'
 
 new_df = None
 for i in tqdm(range(len(files_to_join))):
@@ -641,6 +636,7 @@ for i in tqdm(range(len(files_to_join))):
     else:
         tmp = pd.read_csv(files_to_join[i],sep='|')
         new_df = pd.concat([new_df,tmp],ignore_index=True)
+#print(new_df.head())
 new_df.to_csv(df_file,sep='|',index=False,compression='gzip',quotechar='"')
     
 

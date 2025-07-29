@@ -43,8 +43,8 @@ format:
 
 
 ## Convert notebooks to html
-notebooks=$(shell ls notebooks/*.ipynb)
-notebooks_html:=$(subst .ipynb,.html,$(notebooks))
+notebooks = notebooks/table.ipynb
+notebooks_html = notebooks/table.html
 
 %.html: %.ipynb
 	jupyter nbconvert $(NBCONVERT_PARAMS) --to html $< 
@@ -56,7 +56,7 @@ nbconvert-clean-execute: $(shell rm notebooks/*.html)
 nbconvert-clean-execute: $(notebooks_html)
 
 python_env:
-	python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+	$(PYTHON_INTERPRETER) -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 
 #################################################################################
 # PROJECT RULES                                                                 #
@@ -71,6 +71,34 @@ data: requirements
 .PHONY: plots 
 plots: requirements
 	$(PYTHON_INTERPRETER) ipv6_scanner/plots.py
+
+.PHONY: t1-from-raw
+t1-from-raw: requirements
+	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 1
+	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 1
+	rm data/interim/t1_tmp/*.csv.gz
+	rm data/processed/telescope-t1_data.csv.gz
+
+.PHONY: t2-from-raw
+t2-from-raw: requirements
+	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 2
+	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 2
+	rm data/interim/t2_tmp/*.csv.gz
+	rm data/processed/telescope-t2_data.csv.gz
+
+.PHONY: t3-from-raw
+t3-from-raw: requirements
+	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 3
+	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 3
+	rm data/interim/t3_tmp/*.csv.gz
+	rm data/processed/telescope-t3_data.csv.gz
+
+.PHONY: t4-from-raw
+t4-from-raw: requirements
+	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 4
+	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 4
+	rm data/interim/t4_tmp/*.csv.gz
+	rm data/processed/telescope-t4_data.csv.gz
 
 #################################################################################
 # Self Documenting Commands                                                     #

@@ -1,3 +1,5 @@
 telescope-t*.parquet
 *.pyc
 *.pdf
+data/processed/addr*.gz
+data/raw/t*_raw/

@@ -20,19 +20,20 @@ Clone this repository, then:
 2. Make a virtual environment: `make python_env`
 3. Activate python env: `source .venv/bin/activate`
 4. Download required data from [https://doi.org/10.5281/zenodo.16419096](https://doi.org/10.5281/zenodo.16419096)
-5. Move the `telescope-t*.parquet` files into `./data/processed/`
-6. Move the `addr_type*.gz` files into `./data/processed/`
-7. To get a clean starting environment run `make clean` first.
+5. Move the `telescope-raw-data.tar` file into `./data/raw/` and extract it. Make sure that the `t*_raw/` directories follow directly after `data/raw/`
+6. Move the `telescope-t*.parquet` files into `./data/processed/`
+7. Move the `addr_type*.gz` files into `./data/processed/`
+8. To get a clean starting environment run `make clean` first.
 
 Now you can reproduce the paper plots with: 
 
-8. `make plots`
+9. `make plots`
 
 The plots are then stored under `reports/figures/`
 
 To reproduce the paper tables you can simply run:
 
-9. `make nbconvert-clean-execute`
+10. `make nbconvert-clean-execute`
 
 ## Cleaning the environment
 - `make clean` to remove figures and the table.html file.

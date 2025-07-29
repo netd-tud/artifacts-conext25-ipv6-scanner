@@ -1237,10 +1237,10 @@ def main(
     mpl.rcParams['ps.fonttype'] = 42
     logger.info("Reading data...")
     pl.enable_string_cache()
-    t1 = pl.scan_parquet(T1_DATAFRAME) 
-    t2 = pl.scan_parquet(T2_DATAFRAME) 
-    t3 = pl.scan_parquet(T3_DATAFRAME) 
-    t4 = pl.scan_parquet(T4_DATAFRAME)
+    t1 = pl.scan_parquet(T1_TMP_FRAME) 
+    t2 = pl.scan_parquet(T2_TMP_FRAME) 
+    t3 = pl.scan_parquet(T3_TMP_FRAME) 
+    t4 = pl.scan_parquet(T4_TMP_FRAME)
     announcement_df = pd.read_csv(ANNOUNCEMENT_LOG_FILE)
     vertical_dates = [datetime.strptime(date, '%Y-%m-%d %H:%M:%S') for date in announcement_df[1:].Timestamp_From.unique()]
 
@@ -1264,14 +1264,6 @@ def main(
     logger.info("Generating Figure 08a...")
     columns=['Timestamp','prefix_target']
     network_traffic_overview([t1,t2,t3,t4],['T1 (BGP controlled)','T2 (Partially productive)','T3 (Silent)','T4 (Reactive)'],FIG_NETWORK_TRAFFIC_OVERVIEW, FIGSIZE_LONG,'1h')
-
-    logger.info("Generating Figure 08b...")
-    tmp_df = pd.read_csv(TAXONOMY_BEFORE_SPLIT)
-    taxonomy_plot_before_split(tmp_df,FIG_TAX_BEFORE_SPLIT, FIGSIZE_LONG)
-
-    logger.info("Generating Figure 16...")
-    tmp_df = pd.read_csv(TAXONOMY_DURING_SPLIT)
-    taxonomy_plot_during_split(tmp_df,FIG_TAX_DURING_SPLIT, FIGSIZE_LONG)
 
     logger.info("Generating Figure 09a and 09b...")
     upsetplot_for_column_filtered([t1,t2,t3,t4],['T1','T2','T3','T4'],'AS-Number','ASN','','presplit_longversion',bbox=(1,1),minsubsetsize=0)
@@ -1300,19 +1292,6 @@ def main(
 
     logger.info("Generating Figure 18...")
     nist_plot(FIG_NIST,FIGSIZE_LONG)
-
-    logger.info('Rendering lots of data...go and get a coffee, this may take some time.')
-    logger.info("Generating Figure 13a...")
-    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
-    tencent_structured_scanner_heatmap(t1,FIG_TENCENT_STRUCTURED,FIGSIZE_SMALL_3,columns)
-    
-    logger.info("Generating Figure 13b...")
-    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
-    ponynet_random_scanner_heatmap(t1,FIG_PONYNET_RANDOM,FIGSIZE_SMALL_3,columns)
-
-    logger.info("Generating Figure 14...")
-    columns = ['Timestamp','Source_Address','Session_ID_128','fullhex_destination_address']
-    tencent_numeric_ordered_heatmap(t1,FIG_TENCENT_SORTED,FIGSIZE_SMALL_3,columns)
 
     logger.success("Plot generation complete.")
     # -----------------------------------------

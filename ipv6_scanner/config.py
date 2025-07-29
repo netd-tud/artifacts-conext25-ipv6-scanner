@@ -35,6 +35,15 @@ T2_TMP = INTERIM_DATA_DIR / "t2_tmp"
 T3_TMP = INTERIM_DATA_DIR / "t3_tmp"
 T4_TMP = INTERIM_DATA_DIR / "t4_tmp"
 
+T1_TMP_FRAME = PROCESSED_DATA_DIR / "telescope-t1_data.parquet"
+T2_TMP_FRAME = PROCESSED_DATA_DIR / "telescope-t2_data.parquet"
+T3_TMP_FRAME = PROCESSED_DATA_DIR / "telescope-t3_data.parquet"
+T4_TMP_FRAME = PROCESSED_DATA_DIR / "telescope-t4_data.parquet"
+
+ADDR_TYPE_MAP01 = PROCESSED_DATA_DIR / "addr_type_map.gz"
+ADDR_TYPE_MAP02 = PROCESSED_DATA_DIR / "addr_type_map02.gz"
+ADDR_TYPE_MAP03 = PROCESSED_DATA_DIR / "addr_types_02.gz"
+
 T1_DATAFRAME = PROCESSED_DATA_DIR / "telescope-t1-20240702.parquet"
 T2_DATAFRAME = PROCESSED_DATA_DIR / "telescope-t2-20240702.parquet"
 T3_DATAFRAME = PROCESSED_DATA_DIR / "telescope-t3-20240702.parquet"

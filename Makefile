@@ -29,6 +29,10 @@ clean:
 	$(shell rm reports/figures/*.pdf)
 	$(shell rm reports/figures/*.png)
 
+.PHONY: clean-cache
+clean-cache:
+	$(shell rm data/interim/*.pkl)
+	
 ## Lint using flake8 and black (use `make format` to do formatting)
 .PHONY: lint
 lint:
@@ -71,6 +75,10 @@ data: requirements
 .PHONY: plots 
 plots: requirements
 	$(PYTHON_INTERPRETER) ipv6_scanner/plots.py
+
+.PHONY: plots-new
+plots-new: requirements
+	$(PYTHON_INTERPRETER) ipv6_scanner/plots-new.py
 
 .PHONY: t1-from-raw
 t1-from-raw: requirements

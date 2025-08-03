@@ -17,3 +17,7 @@ traitlets
 numpy
 pathlib
 typing
+maxminddb
+geoip2
+pyasn
+ipaddress

@@ -5,6 +5,8 @@
 PROJECT_NAME = artifacts-conext25-ipv6-scanner
 PYTHON_VERSION = 3.10
 PYTHON_INTERPRETER = python3
+SHELL := /bin/bash
+
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -25,13 +27,13 @@ requirements:
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-	$(shell rm notebooks/*.html)
-	$(shell rm reports/figures/*.pdf)
-	$(shell rm reports/figures/*.png)
+	rm notebooks/*.html
+	rm reports/figures/*.pdf
+	rm reports/figures/*.png
 
 .PHONY: clean-cache
 clean-cache:
-	$(shell rm data/interim/*.pkl)
+	rm data/interim/*.pkl)
 
 ## Lint using flake8 and black (use `make format` to do formatting)
 .PHONY: lint
@@ -56,7 +58,6 @@ notebooks_html = notebooks/tables.html
 nbconvert: $(notebooks_html)
 
 nbconvert-clean-execute: NBCONVERT_PARAMS=--execute
-nbconvert-clean-execute: $(shell rm notebooks/tables.html)
 nbconvert-clean-execute: $(notebooks_html)
 
 ## Convert notebooks to html
@@ -66,10 +67,9 @@ notebooks_html2 = notebooks/tables-new.html
 %.html: %.ipynb
 	jupyter nbconvert $(NBCONVERT_PARAMS) --to html $< 
 
-nbconvert-new: $(notebooks_html)
+nbconvert-new: $(notebooks_html2)
 
 nbconvert-clean-execute-new: NBCONVERT_PARAMS=--execute
-nbconvert-clean-execute-new: $(shell rm notebooks/tables-new.html)
 nbconvert-clean-execute-new: $(notebooks_html2)
 
 python_env:

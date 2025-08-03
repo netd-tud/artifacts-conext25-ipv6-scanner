@@ -1,5 +1,4 @@
 from pathlib import Path
-from enum import StrEnum
 
 import polars as pl
 import pandas as pd

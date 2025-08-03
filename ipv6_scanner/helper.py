@@ -1,5 +1,4 @@
 from pathlib import Path
-from enum import StrEnum
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure

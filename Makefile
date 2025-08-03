@@ -27,9 +27,10 @@ requirements:
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
-	rm notebooks/*.html
-	rm reports/figures/*.pdf
-	rm reports/figures/*.png
+	find ./notebooks/ -type f -name "*.html" -delete
+	find ./reports/figures/ -type f -name "*.pdf" -delete
+	find ./reports/figures/ -type f -name "*.png" -delete
+	rm -rf ./notebooks/.ipynb_checkpoints
 
 .PHONY: clean-cache
 clean-cache:

@@ -591,12 +591,12 @@ def status_bar(directory,total):
             pbar.update(current_status-old)
             old=current_status
             
-def parallel_processing(files, columns, prefixes, announcement_df, output_dir, chunk_size=10,n_cpus=8):
+def parallel_processing(files, columns, prefixes, announcement_df, output_dir, chunk_size=50):
     # Split the list of files into chunks
     file_chunks = [files[i:i+chunk_size] for i in range(0, len(files), chunk_size)]
     
     # Create a multiprocessing pool
-    pool = mp.Pool(processes=n_cpus)
+    pool = mp.Pool(processes=mp.cpu_count())
     
     # Total number of chunks
     total_chunks = len(file_chunks)

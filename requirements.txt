@@ -21,3 +21,4 @@ maxminddb
 geoip2
 pyasn
 ipaddress
+period_detection

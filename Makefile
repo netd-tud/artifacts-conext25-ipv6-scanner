@@ -34,7 +34,7 @@ clean:
 
 .PHONY: clean-cache
 clean-cache:
-	rm data/interim/*.pkl)
+	rm data/interim/*.pkl
 
 ## Lint using flake8 and black (use `make format` to do formatting)
 .PHONY: lint

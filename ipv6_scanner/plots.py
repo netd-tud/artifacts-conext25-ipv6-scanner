@@ -1119,7 +1119,7 @@ def ponynet_random_scanner_heatmap(df,fig_name,fig_size,columns):
     plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
 
     fig = plt.gcf()
-    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
+    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=300,pngonly=True)
 
 @timeit
 def tencent_structured_scanner_heatmap(df,fig_name,fig_size,columns):
@@ -1172,7 +1172,7 @@ def tencent_structured_scanner_heatmap(df,fig_name,fig_size,columns):
     plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
 
     fig = plt.gcf()
-    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
+    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=300,pngonly=True)
 
 @timeit
 def tencent_numeric_ordered_heatmap(df,fig_name,fig_size,columns):
@@ -1224,7 +1224,7 @@ def tencent_numeric_ordered_heatmap(df,fig_name,fig_size,columns):
     plt.text(0.5, 0.875, 'Telescope prefix', va='center', ha='center', fontsize=10, color='#000000', transform=plt.gca().transAxes)
 
     fig = plt.gcf()
-    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=150,pngonly=True)
+    save_plot(fig,fig_name,directory=FIGURES_DIR,autoclose=True,dpi=300,pngonly=True)
 
 @app.command()
 def main(

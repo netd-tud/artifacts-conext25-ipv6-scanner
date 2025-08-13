@@ -98,6 +98,7 @@ plots-new: requirements
 t1-from-raw: requirements
 	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 1
 	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 1
+	$(PYTHON_INTERPRETER) ipv6_scanner/classify_scanner.py 1
 	rm data/interim/t1_tmp/*.csv.gz
 	rm data/processed/telescope-t1_data.csv.gz
 
@@ -105,6 +106,7 @@ t1-from-raw: requirements
 t2-from-raw: requirements
 	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 2
 	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 2
+	$(PYTHON_INTERPRETER) ipv6_scanner/classify_scanner.py 2
 	rm data/interim/t2_tmp/*.csv.gz
 	rm data/processed/telescope-t2_data.csv.gz
 
@@ -112,6 +114,7 @@ t2-from-raw: requirements
 t3-from-raw: requirements
 	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 3
 	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 3
+	$(PYTHON_INTERPRETER) ipv6_scanner/classify_scanner.py 3
 	rm data/interim/t3_tmp/*.csv.gz
 	rm data/processed/telescope-t3_data.csv.gz
 
@@ -119,6 +122,7 @@ t3-from-raw: requirements
 t4-from-raw: requirements
 	$(PYTHON_INTERPRETER) ipv6_scanner/telescope-data-processing-lightweight.py 4
 	$(PYTHON_INTERPRETER) ipv6_scanner/post_processing_01.py 4
+	$(PYTHON_INTERPRETER) ipv6_scanner/classify_scanner.py 4
 	rm data/interim/t4_tmp/*.csv.gz
 	rm data/processed/telescope-t4_data.csv.gz
 

@@ -103,10 +103,10 @@ with mp.Manager() as manager:
     pool.join()
     status_process.join()
     print('[*] Periodicity testing done.')
-    #for ip in tqdm(source_ips_128):
-    #    if ip not in shared_dict.keys():
-    #        shared_dict[ip] = -1
-    #print('[*] Extended dictionary with missing IPs (Oneoff, triggered only).')
+    for ip in tqdm(source_ips_128):
+        if ip not in shared_dict.keys():
+            shared_dict[ip] = -1
+    print('[*] Extended dictionary with missing IPs (Oneoff, triggered only).')
     print('[*] Mapping IPs with period detection results.')
     df['period_128'] = df.scan_source_128.map(shared_dict)
     print('[*] Operations done - writing back.')

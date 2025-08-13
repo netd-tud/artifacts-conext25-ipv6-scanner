@@ -122,8 +122,9 @@ addr_map02 = pd.read_csv(ADDR_TYPE_MAP02,sep='|',names=['ip_addr','addr_type'],i
 addr_map = pd.concat([addr_map01,addr_map02])
 addr_map.loc[addr_map.index.str.endswith('::'),'addr_type'] = 'full_zero_addr'
 df['dest_addr_type'] = df.Destination_Address.map(addr_map.addr_type)
-
-df = df[((df.TCP_Flags=='nan') | (df.TCP_Flags=='··········S·')) & (~df.Source_Address.str.startswith('2001:67c:254:'))]
+#print(f'DF before filtering Spoki: {len(df)}')
+#df = df[((df.TCP_Flags=='nan') | (df.TCP_Flags=='··········S·')) & (~df.Source_Address.str.startswith('2001:67c:254:'))]
+print(f'Length of DF: {len(df)}')
 
 df.sort_values('Timestamp',inplace=True)
 df = df.dropna(subset=['Hour'])

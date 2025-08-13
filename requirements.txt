@@ -21,4 +21,4 @@ maxminddb
 geoip2
 pyasn
 ipaddress
-period_detection
+git+https://github.com/mkoch-tud/period-detection

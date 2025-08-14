@@ -127,7 +127,6 @@ df['dest_addr_type'] = df.Destination_Address.map(addr_map.addr_type)
 print(f'Length of DF: {len(df)}')
 
 df.sort_values('Timestamp',inplace=True)
-df = df.dropna(subset=['Hour'])
 print('[*] Operations done.')
 
 print('[*] Setting dtypes...')

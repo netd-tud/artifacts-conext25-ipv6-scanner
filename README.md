@@ -13,7 +13,8 @@ https://doi.org/10.1145/3749215
 
 # Reproduction of paper artifacts
 
-Requirements: 64 GB of RAM, 50 GB free disk space
+Requirements to reproduce plots and tables from pre-build dataframes: 64 GB of RAM, 50 GB free disk space
+Requirements to reproduce plots and tables from scratch: 256 GB of RAM, 50 GB free disk space
 
 Clone this repository, then: 
 1. Make sure python 3.10 is installed.

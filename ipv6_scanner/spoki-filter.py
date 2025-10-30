@@ -21,4 +21,3 @@ if __name__=='__main__':
     print(f'[*] Writing back...')
     df.write_parquet(f'{PROCESSED_DATA_DIR}/telescope-t{suffix}_data.parquet')
     print(f'[*] Done.')
-    #print(len(df))

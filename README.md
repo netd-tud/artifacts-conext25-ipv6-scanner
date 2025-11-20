@@ -5,8 +5,8 @@ Artifacts: A Detailed Measurement View on IPv6 Scanners and Their Adaption to BG
 
 This repository contains the artifacts for the following paper:
 ```
-A Detailed Measurement View on IPv6 Scanners and Their Adaption to BGP Signals
 Isabell Egloff, Raphael Hiesgen, Maynard Koch, Thomas C. Schmidt, and Matthias Wählisch
+A Detailed Measurement View on IPv6 Scanners and Their Adaption to BGP Signals
 Proc. ACM Netw., Vol. 3, No. CoNEXT3, Article 15. Publication date: September 2025.
 https://doi.org/10.1145/3749215
 ```
@@ -20,7 +20,7 @@ Clone this repository, then:
 1. Make sure python 3.10 is installed.
 2. Make a virtual environment: `make python_env`
 3. Activate python env: `source .venv/bin/activate`
-4. Download required data from [https://doi.org/10.5281/zenodo.16419096](https://doi.org/10.5281/zenodo.16419096)
+4. Download required data from [https://doi.org/10.5281/zenodo.16419095](https://doi.org/10.5281/zenodo.16419095)
 5. Move the `telescope-raw-data.tar` file into `./data/raw/` and extract it. Make sure that the `t*_raw/` directories follow directly after `data/raw/`
 6. Move the `telescope-t*.parquet` files into `./data/processed/`
 7. Move the `addr_type*.gz` files into `./data/processed/`
